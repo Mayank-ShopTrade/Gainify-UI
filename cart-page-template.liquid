@@ -1,0 +1,937 @@
+
+<section class="outline-focus-zero container-fluid wow fadeInUp">
+  <div class="cart-page outline-focus-zero m-0">  
+    {% if cart.item_count > 0 %} 
+      <form action="/cart" method="post" novalidate>
+        <div class="row outline-focus-zero row-padding--modifier">
+          <div class="col-12 col-xl-8">
+                  <table class="cart-page__table">
+                    <tbody class="position-relative">
+                      {% for item in cart.items %}
+                        <tr class="row d-flex align-items-center bottom-horizontal-after">
+                          <td class="order-1 order-md-1 col-5 col-md-3 col-xl-3 image-p-class">
+                            <div class="cart-mobile-image-padding text-xl-left">
+                               
+                              <a href="{{ item.url | within: collections.all }}">
+                                <img class="cart-page__image" src="{{ item | img_url: 'medium' }}" alt="{{ item.title | escape }}">
+                              </a>
+                            </div>
+                          </td> 
+                          <td class="order-3 col-12 order-md-2  col-md-4 offset-xl-1 col-xl-3 image-p-class">
+                            <div class="cart-page__product-price">{{ item.price | money }}</div> 
+                            <a href="{{ item.url }}" class="cart-page__product-title text-uppercase">{{ item.product.title }}</a>
+                            <p class="cart-page__product-subtitle">{{ item.product.type }}</p>
+                            <h5 class="text-uppercase font-15-cart js-hex-color" data-cart-color= "{{ item.variant.title }}">{% if item.variant.title != 'Default Title' %} {{ item.variant.title }} {%endif%} </h5> 
+                            <!-- <div class="svg_flip svg_flip--modifier js-svg_flip">
+                              <svg class="swatch__svg" viewBox="0 0 29 29">
+                                  <path class="swatch__arc1" fill="none" stroke="#979797" stroke-width="1" d="M 5.661165235168157 23.338834764831844 A 12.5 12.5 0 0 0 27 14.5"></path>
+                                  <path class="swatch__arc2" fill="none" stroke="#979797" stroke-width="1" d="M 23.338834764831844 5.661165235168154 A 12.5 12.5 0 0 0 2 14.500000000000002"></path>
+                              </svg>
+                          </div> -->
+                            
+                            {%comment%}
+
+                            <p>{{ item.variant.title }}</p>{%endcomment%}
+                            
+                            <!-- aqaa{{ item.variant.title }} -->
+                            <!-- <p class="cart-page-line-item-sample">50ml</p> -->
+                                                       
+                            <!-- <a href="/cart/change?line={{ forloop.index }}&amp;quantity=0">remove</a> -->
+                          </td>
+                          <td class=" order-2 order-md-3 offset-4 col-3 offset-md-0 col-md-3 offset-xl-0 col-xl-3">
+                            <div class="cart-mobile-remove">
+                              <!-- <a class="d-inline-block  cart-remove-btn-mobile" href="/cart/change?line={{ forloop.index }}&amp;quantity=0">REMOVE</a> -->
+                              <!-- <a class="d-inline-block  cart-remove-btn-mobile" href="/cart/change?line={{ forloop.index }}&amp;quantity=0">x</a> -->
+                              <!-- <span class="d-block d-md-none">|</span> -->
+                              <div class="product-page__input-wrapper ">
+                                <span class="js-cart-page__quantity-decrement">
+                                    <svg class="Icon Icon--minus js-icon-quantity js-icon-minus js-icon-quantity--cart" role="presentation" viewBox="0 0 16 2">
+                                        <path d="M1,1 L15,1" stroke="currentColor" fill="none" fill-rule="evenodd" stroke-linecap="square"></path>
+                                    </svg>
+                                </span>
+                                <input type="number" id="Quantity" class="product-page__quantity-input text-center js-input-focus-cart" name="updates[]" value="{{ item.quantity }}" min="1">
+                                <!-- <input type="number" name="updates[]" id="Quantity updates_{{ item.key }}"  class="product-page__quantity-input" value="{{ item.quantity }}" min="0"> -->
+                                <!-- id="updates_{{ item.key }}" -->
+                                <span class="js-cart-page__quantity-increment">
+                                    <svg class="Icon Icon--plus js-icon-quantity js-icon-plus js-icon-quantity--cart" role="presentation" viewBox="0 0 16 16">
+                                        <g stroke="currentColor" fill="" fill-rule="evenodd" stroke-linecap="square">
+                                            <path d="M8,1 L8,15"></path>
+                                            <path d="M1,8 L15,8"></path>
+                                        </g>
+                                    </svg>
+                                </span>
+                            </div>
+                              <!-- <input type="number" name="updates[]" id="updates_{{ item.key }}" value="{{ item.quantity }}" min="0"> -->
+                            </div>
+                          </td>
+                          <td class="order-md-4 offset-md-1 col-md-1  offset-xl-1 col-xl-1">
+                            {% if item.original_line_price != item.line_price %}{{ item.original_line_price | money }}{% endif %}
+                            <!-- <p class="cart-page__total-price">{{ item.line_price | money }}</p> -->
+                            <a class="d-inline-block  cart-remove-btn-mobile float-right" href="/cart/change?line={{ forloop.index }}&amp;quantity=0">
+                              <img src="{{'Cross_cart.svg' | asset_url }}" alt="remove item">
+                            </a>
+                            {% for discount in item.discounts %}{{ discount.title }}{% endfor %}
+                          </td>
+                        </tr>
+                      {% endfor %}
+                      <tr id="clear-cart-button">
+                        <td>
+                          <a href="/cart/clear" class="clear-cart">Clear Cart</a>
+                        </td>
+                        </tr>
+                    <input type="submit" name="update"
+                class="btn btn--secondary small--hide cart__submit-control"
+                value="{{ 'cart.general.update' | t }}">
+                    </tbody>
+                  </table>
+          </div>
+          <div class="col-12 col-xl-4 margin-top-mobile-cart">
+            <div class="cart-subtotal-sticky-wrapper">
+            <div class="cart-mobile-line-before-delivery-notes d-block d-md-none"></div>
+            <!-- <h3 class="cart-page__my-cart-heading text-uppercase d-none d-md-block">OPTION</h3> -->
+            <div class="cart-subtotal position-relative">
+              <p class="cart-page__total-price text-uppercase">Subtotal<span class="float-right">{{ cart.total_price | money_with_currency }}</span></p>
+              <div class="cart-subtotal__all-taxes-text text-center text-uppercase">free worldwide shipping on all orders</div>
+              <button type="submit" class="d-none" name="update" id="update-cart-price">Update</button>
+              <button class="text-uppercase checkout-btn btn-hover color-5" type="submit" name="checkout">checkout</button>
+              <div class="cart-checkout-payments-wrapper text-center">
+                <p>CHECKOUT SECURELY WITH</p>
+                <img src="https://cdn.shopify.com/s/files/1/2093/5961/files/Logos.png" alt="payment options">
+              </div>
+              <div class="cart-continue-shopping ">
+                  <a href="/collections/all" title="Continue shopping" class="text-uppercase">Continue Shopping</a>
+                </div>
+            </div>
+          </div>
+          </div>
+        <!-- <div class="col-12">
+          <div class="cart-continue-shopping d-none d-md-block">
+            <a href="/products/mind-drive-™" title="Continue shopping">Continue Shopping</a>
+          </div>
+        </div> -->
+          <!--  -->
+          <!-- <div class="clear-cart-wrapper">
+              <a href="/cart/clear">Clear Cart</a>
+          </div> -->
+      </div>
+    </form>
+    {% else %}
+    {%include 'empty-cart'%}
+    <style>
+      .pair-with-section,.progress-bar-section {
+        display: none;
+      }
+    </style>
+    {% endif %}
+  </div>
+</section>
+
+<script>
+$("#shopify-section-footer-copy").remove();
+</script>
+
+
+<script>
+      window.addEventListener('load', (()=>{
+        $("#shopify-section-footer-copy").remove();
+      }))
+</script>
+
+
+{% if cart.item_count != 0 %}
+  <div class="page-width gainify"></div>
+  <script>
+    function get_data() {
+    return {
+        "campaigns": [
+          {
+              "id": "4651646779525",
+              "title": "Long Sleeve Cotton Top",
+              "image": "https://cdn.shopify.com/s/files/1/0341/4907/3029/products/woman-outside-brownstone_925x_cbc014a2-b37b-4eda-bd6c-71c0ec7249b3.jpg?v=1583217541",
+              "variants": [
+                  {
+                      "id": "32710816071813",
+                      "title": "xs",
+                      "price": 52.0,
+                      "sku": "",
+                      "compare_price": null
+                  },
+                  {
+                      "id": "32710816137349",
+                      "title": "small",
+                      "price": 63.0,
+                      "sku": "",
+                      "compare_price": null
+                  },
+                  {
+                      "id": "32710816202885",
+                      "title": "medium",
+                      "price": 44.0,
+                      "sku": "",
+                      "compare_price": null
+                  },
+                  {
+                      "id": "32710816235653",
+                      "title": "large",
+                      "price": 35.0,
+                      "sku": "",
+                      "compare_price": null
+                  },
+                  {
+                      "id": "32710816301189",
+                      "title": "xl",
+                      "price": 76.0,
+                      "sku": "",
+                      "compare_price": null
+                  },
+                  {
+                      "id": "32710816366725",
+                      "title": "xxl",
+                      "price": 76.0,
+                      "sku": "",
+                      "compare_price": null
+                  }
+              ]
+          },
+          {
+              "id": "4651647697029",
+              "title": "Navy Sports Jacket",
+              "image": "https://cdn.shopify.com/s/files/1/0341/4907/3029/products/mens-fall-fashion-jacket_925x_2d391ff5-5a8d-489b-ad4c-db655113c9a3.jpg?v=1583217551",
+              "variants": [
+                  {
+                      "id": "32710822723717",
+                      "title": "xs",
+                      "price": 63.0,
+                      "sku": "",
+                      "compare_price": null
+                  },
+                  {
+                      "id": "32710822756485",
+                      "title": "small",
+                      "price": 33.0,
+                      "sku": "",
+                      "compare_price": null
+                  },
+                  {
+                      "id": "32710822789253",
+                      "title": "medium",
+                      "price": 38.0,
+                      "sku": "",
+                      "compare_price": null
+                  },
+                  {
+                      "id": "32710822822021",
+                      "title": "large",
+                      "price": 65.0,
+                      "sku": "",
+                      "compare_price": null
+                  },
+                  {
+                      "id": "32710822854789",
+                      "title": "xl",
+                      "price": 75.0,
+                      "sku": "",
+                      "compare_price": null
+                  },
+                  {
+                      "id": "32710822887557",
+                      "title": "xxl",
+                      "price": 57.0,
+                      "sku": "",
+                      "compare_price": null
+                  }
+              ]
+          },
+          {
+              "id": "4651649204357",
+              "title": "Ocean Blue Shirt",
+              "image": "https://cdn.shopify.com/s/files/1/0341/4907/3029/products/young-man-in-bright-fashion_925x_f7029e2b-80f0-4a40-a87b-834b9a283c39.jpg?v=1583217570",
+              "variants": [
+                  {
+                      "id": "32710830129285",
+                      "title": "xs",
+                      "price": 37.0,
+                      "sku": "",
+                      "compare_price": null
+                  },
+                  {
+                      "id": "32710830194821",
+                      "title": "small",
+                      "price": 55.0,
+                      "sku": "",
+                      "compare_price": null
+                  },
+                  {
+                      "id": "32710830260357",
+                      "title": "medium",
+                      "price": 45.0,
+                      "sku": "",
+                      "compare_price": null
+                  },
+                  {
+                      "id": "32710830325893",
+                      "title": "large",
+                      "price": 68.0,
+                      "sku": "",
+                      "compare_price": null
+                  },
+                  {
+                      "id": "32710830391429",
+                      "title": "xl",
+                      "price": 54.0,
+                      "sku": "",
+                      "compare_price": null
+                  },
+                  {
+                      "id": "32710830424197",
+                      "title": "xxl",
+                      "price": 79.0,
+                      "sku": "",
+                      "compare_price": null
+                  }
+              ]
+          },
+          {
+              "id": "4651645206661",
+              "title": "Olive Green Jacket",
+              "image": "https://cdn.shopify.com/s/files/1/0341/4907/3029/products/urban-fashion_925x_353f971d-ec3e-4218-9437-28cc7cdb0af2.jpg?v=1583217527",
+              "variants": [
+                  {
+                      "id": "32710810566789",
+                      "title": "xs",
+                      "price": 49.0,
+                      "sku": "",
+                      "compare_price": null
+                  },
+                  {
+                      "id": "32710810599557",
+                      "title": "small",
+                      "price": 77.0,
+                      "sku": "",
+                      "compare_price": null
+                  },
+                  {
+                      "id": "32710810632325",
+                      "title": "medium",
+                      "price": 34.0,
+                      "sku": "",
+                      "compare_price": null
+                  },
+                  {
+                      "id": "32710810665093",
+                      "title": "large",
+                      "price": 73.0,
+                      "sku": "",
+                      "compare_price": null
+                  },
+                  {
+                      "id": "32710810763397",
+                      "title": "xl",
+                      "price": 43.0,
+                      "sku": "",
+                      "compare_price": null
+                  },
+                  {
+                      "id": "32710810796165",
+                      "title": "xxl",
+                      "price": 53.0,
+                      "sku": "",
+                      "compare_price": null
+                  }
+              ]
+          },
+          {
+              "id": "4651645501573",
+              "title": "Red Sports Tee",
+              "image": "https://cdn.shopify.com/s/files/1/0341/4907/3029/products/womens-red-t-shirt_925x_bcf81605-4475-46c0-a85c-2f8b2fca729a.jpg?v=1583217530",
+              "variants": [
+                  {
+                      "id": "32710811091077",
+                      "title": "xs",
+                      "price": 40.0,
+                      "sku": "",
+                      "compare_price": null
+                  },
+                  {
+                      "id": "32710811123845",
+                      "title": "small",
+                      "price": 43.0,
+                      "sku": "",
+                      "compare_price": null
+                  },
+                  {
+                      "id": "32710811156613",
+                      "title": "medium",
+                      "price": 50.0,
+                      "sku": "",
+                      "compare_price": null
+                  },
+                  {
+                      "id": "32710811189381",
+                      "title": "large",
+                      "price": 42.0,
+                      "sku": "",
+                      "compare_price": null
+                  },
+                  {
+                      "id": "32710811222149",
+                      "title": "xl",
+                      "price": 72.0,
+                      "sku": "",
+                      "compare_price": null
+                  },
+                  {
+                      "id": "32710811254917",
+                      "title": "xxl",
+                      "price": 51.0,
+                      "sku": "",
+                      "compare_price": null
+                  }
+              ]
+          },
+          {
+              "id": "4651646976133",
+              "title": "Silk Summer Top",
+              "image": "https://cdn.shopify.com/s/files/1/0341/4907/3029/products/young-hip-woman-at-carnival_925x_710974da-04df-42cc-9917-0b560eca41b7.jpg?v=1583217544",
+              "variants": [
+                  {
+                      "id": "32710818300037",
+                      "title": "xs",
+                      "price": 40.0,
+                      "sku": "",
+                      "compare_price": null
+                  },
+                  {
+                      "id": "32710818332805",
+                      "title": "small",
+                      "price": 62.0,
+                      "sku": "",
+                      "compare_price": null
+                  },
+                  {
+                      "id": "32710818365573",
+                      "title": "medium",
+                      "price": 61.0,
+                      "sku": "",
+                      "compare_price": null
+                  },
+                  {
+                      "id": "32710818398341",
+                      "title": "large",
+                      "price": 54.0,
+                      "sku": "",
+                      "compare_price": null
+                  },
+                  {
+                      "id": "32710818463877",
+                      "title": "xl",
+                      "price": 33.0,
+                      "sku": "",
+                      "compare_price": null
+                  },
+                  {
+                      "id": "32710818496645",
+                      "title": "xxl",
+                      "price": 60.0,
+                      "sku": "",
+                      "compare_price": null
+                  }
+              ]
+          },
+          {
+              "id": "4651654348933",
+              "title": "Sleep8 Sanitizing Filter Bag",
+              "image": "https://cdn.shopify.com/s/files/1/0341/4907/3029/products/Sleep8_Sanitizing_Filter_Bag.jpg?v=1583217621",
+              "variants": [
+                  {
+                      "id": "32710858735749",
+                      "title": "Default Title",
+                      "price": 13.95,
+                      "sku": "00860224002613",
+                      "compare_price": "15.95"
+                  }
+              ]
+          },
+          {
+              "id": "4651647271045",
+              "title": "Zipped Jacket",
+              "image": "https://cdn.shopify.com/s/files/1/0341/4907/3029/products/menswear-blue-zip-up-jacket_925x_e0818abb-a8f8-4085-89ef-456eb0dfe832.jpg?v=1583217546",
+              "variants": [
+                  {
+                      "id": "32710818922629",
+                      "title": "xs",
+                      "price": 76.0,
+                      "sku": "",
+                      "compare_price": null
+                  },
+                  {
+                      "id": "32710818955397",
+                      "title": "small",
+                      "price": 42.0,
+                      "sku": "",
+                      "compare_price": null
+                  },
+                  {
+                      "id": "32710818988165",
+                      "title": "medium",
+                      "price": 56.0,
+                      "sku": "",
+                      "compare_price": null
+                  },
+                  {
+                      "id": "32710819020933",
+                      "title": "large",
+                      "price": 53.0,
+                      "sku": "",
+                      "compare_price": null
+                  },
+                  {
+                      "id": "32710819053701",
+                      "title": "xl",
+                      "price": 73.0,
+                      "sku": "",
+                      "compare_price": null
+                  },
+                  {
+                      "id": "32710819086469",
+                      "title": "xxl",
+                      "price": 64.0,
+                      "sku": "",
+                      "compare_price": null
+                  }
+              ]
+          }
+      ],
+      "settings": {
+          "is_upsell_items": false,
+          "is_mobile_users": false,
+          "is_desktop_users": false,
+          "heading": "Heading 1",
+          "heading_font": "Font 1",
+          "heading_color": "#1c0f0f",
+          "button_text": "Add Cart",
+          "button_color": "#373766",
+          "background_color": "#fff"
+      }
+    }
+  }
+  </script>
+  <script>
+  //carousel dots for mobile
+  var imageCarouselContainerDots = document.createElement("div");
+  imageCarouselContainerDots.classList.add("imageCarouselContainerDots");
+  // =================== swipe detection in mobile ===================
+  class SwipeEventDispatcher {
+      constructor(element, options = {}) {
+          this.evtMap = {
+              SWIPE_LEFT: [],
+              SWIPE_UP: [],
+              SWIPE_DOWN: [],
+              SWIPE_RIGHT: []
+          };
+
+          this.xDown = null;
+          this.yDown = null;
+          this.element = element;
+          this.isMouseDown = false;
+          this.listenForMouseEvents = true;
+          this.options = Object.assign({ triggerPercent: 0.3 }, options);
+
+          element.addEventListener('touchstart', evt => this.handleTouchStart(evt), false);
+          element.addEventListener('touchend', evt => this.handleTouchEnd(evt), false);
+          element.addEventListener('mousedown', evt => this.handleMouseDown(evt), false);
+          element.addEventListener('mouseup', evt => this.handleMouseUp(evt), false);
+      }
+
+      on(evt, cb) {
+          this.evtMap[evt].push(cb);
+      }
+
+      off(evt, lcb) {
+          this.evtMap[evt] = this.evtMap[evt].filter(cb => cb !== lcb);
+      }
+
+      trigger(evt, data) {
+          this.evtMap[evt].map(handler => handler(data));
+      }
+
+      handleTouchStart(evt) {
+          this.xDown = evt.touches[0].clientX;
+          this.yDown = evt.touches[0].clientY;
+      }
+
+      handleMouseDown(evt) {
+          if (this.listenForMouseEvents==false) return;
+          this.xDown = evt.clientX;
+          this.yDown = evt.clientY;
+          this.isMouseDown = true;
+      }
+
+      handleMouseUp(evt) {
+          if (this.isMouseDown == false) return;
+          const deltaX = evt.clientX - this.xDown;
+          const deltaY = evt.clientY - this.yDown;
+          const distMoved = Math.abs(Math.abs(deltaX) > Math.abs(deltaY) ? deltaX : deltaY);
+          const activePct = distMoved / this.element.offsetWidth;
+
+          if (activePct > this.options.triggerPercent) {
+              if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                  deltaX < 0 ? this.trigger('SWIPE_LEFT') : this.trigger('SWIPE_RIGHT');
+              } else {
+                  deltaY > 0 ? this.trigger('SWIPE_UP') : this.trigger('SWIPE_DOWN');
+              }
+          }
+      }
+
+      handleTouchEnd(evt) {
+          const deltaX = evt.changedTouches[0].clientX - this.xDown;
+          const deltaY = evt.changedTouches[0].clientY - this.yDown;
+          const distMoved = Math.abs(Math.abs(deltaX) > Math.abs(deltaY) ? deltaX : deltaY);
+          const activePct = distMoved / this.element.offsetWidth;
+
+          if (activePct > this.options.triggerPercent) {
+              if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                  deltaX < 0 ? this.trigger('SWIPE_LEFT') : this.trigger('SWIPE_RIGHT');
+              } else {
+                  deltaY > 0 ? this.trigger('SWIPE_UP') : this.trigger('SWIPE_DOWN');
+              }
+          }
+      }
+  }
+
+  window.addEventListener("load", function(event) {
+    var scrollWidth = window.outerWidth;
+    var add = 0;
+    var addMax = document.querySelectorAll('.productContainer').length;
+    console.log('addMax is '+addMax);
+    for(var i=0;i<addMax;i++){
+      var imageCarouselSingleDot = document.createElement("div");
+      imageCarouselSingleDot.classList.add('imageCarouselSingleDot');
+      imageCarouselSingleDot.classList.add('indexof'+i+'');
+      imageCarouselContainerDots.appendChild(imageCarouselSingleDot);
+    }
+    document.getElementsByClassName('imageCarouselSingleDot')[0].classList.add('active-dot');
+    const dispatcher = new SwipeEventDispatcher(document.body);
+    dispatcher.on('SWIPE_RIGHT', () => { 
+        console.log('I swiped right!');
+        if(add > 0){
+            add--;
+            scrollImages = add*100;
+            for(var i=0;i<addMax;i++){
+              document.getElementsByClassName('imageCarouselSingleDot')[i].classList.remove('active-dot');
+            }
+            document.getElementsByClassName('imageCarouselSingleDot')[add].classList.add('active-dot');
+            for(var i=0;i<addMax;i++){
+              document.getElementsByClassName('productContainer')[i].style.transform = "translate(-"+scrollImages+"%)";
+            }
+            // $('.productContainer').css({"transform":"translate(-"+scrollImages+"%)"});
+            console.log('add > 0');
+        }
+    })
+    dispatcher.on('SWIPE_LEFT', () => { 
+        console.log('I swiped left!'); 
+        if( add < addMax - 1 ){
+            add++;
+            scrollImages = add*100;
+            for(var i=0;i<addMax;i++){
+              document.getElementsByClassName('imageCarouselSingleDot')[i].classList.remove('active-dot');
+            }
+            document.getElementsByClassName('imageCarouselSingleDot')[add].classList.add('active-dot');
+            for(var i=0;i<addMax;i++){
+              document.getElementsByClassName('productContainer')[i].style.transform = "translate(-"+scrollImages+"%)";
+            }
+            console.log('add < 0');
+        }
+    })
+  });  
+
+
+    console.log(localStorage.getItem("data"));
+    console.log('This is for cart with products');
+    let dataItems = function(appdata){
+      // image carousel container which contain product carousel along with the containber headibng
+      var imageCarouselContainer = document.createElement("div");
+      imageCarouselContainer.classList.add("imageCarouselContainer");
+      //carousel right arrow
+      var carouselRightButton = document.createElement("div");
+      carouselRightButton.classList.add('carouselRightButton');
+      var carouselRightButtonArrow = document.createElement("i");
+      carouselRightButtonArrow.classList.add('fa');
+      carouselRightButtonArrow.classList.add('fa-angle-right');
+      carouselRightButton.appendChild(carouselRightButtonArrow);
+      parentContainer.appendChild(carouselRightButton);
+      //carousel left arrow
+      var carouselLeftButton = document.createElement("div");
+      carouselLeftButton.classList.add('carouselLeftButton');
+      var carouselLeftButtonArrow = document.createElement("i");
+      carouselLeftButtonArrow.classList.add('fa');
+      carouselLeftButtonArrow.classList.add('fa-angle-left');
+      carouselLeftButton.appendChild(carouselLeftButtonArrow);
+      parentContainer.appendChild(carouselLeftButton);
+      //heading container
+      var headingContainer = document.createElement("h1");
+      headingContainer.classList.add('headingContainer');
+      headingContainer.style.color = appdata.settings.heading_color;
+      headingContainer.style.fontSize = appdata.settings.heading_font;
+      var headingText = document.createTextNode(appdata.settings.heading);
+      headingContainer.appendChild(headingText);
+      for(var i=0;i < appdata.campaigns.length; i++){
+        console.log(appdata.campaigns.length);
+        if(appdata.campaigns.length == 1){
+          carouselLeftButton.style.display = "none";
+          carouselRightButton.style.display = "none";
+          // outermost productContainer
+          var productContainer = document.createElement("div");
+          productContainer.classList.add("productContainerOne");
+          // product image imageContainer
+          var imageContainer = document.createElement("div");
+          imageContainer.classList.add("imageContainerOne");
+          // image
+          var Image = document.createElement("IMG");
+          Image.classList.add("imageOne");
+          // product name 
+          var productName = document.createElement("p");
+          var productNameText = document.createTextNode(appdata.campaigns[i].title);
+          productName.appendChild(productNameText);
+          console.log(productNameText.length);
+          // console.log(productNameText.slice(0, 13));
+          if(productNameText.length > 30){
+
+          }
+          productName.classList.add("productNameOne");
+          // image src
+          Image.src = appdata.campaigns[i].image;
+          //product price
+          var productPrice = document.createElement("span");
+          productPrice.classList.add('productPriceOne');
+          var productPriceText = document.createTextNode(appdata.campaigns[i].variants[0].price);
+          productPrice.appendChild(productPriceText);
+          //product name and price container
+          var priceAndProductName = document.createElement("div");
+          priceAndProductName.classList.add('priceAndProductName');
+          priceAndProductName.appendChild(productName);
+          priceAndProductName.appendChild(productPrice);
+          //product compareprice
+          if(appdata.campaigns[i].variants[0].compare_price == null){
+            var productComparePrice = document.createElement("span");
+            productComparePrice.classList.add('productComparePriceOne');
+            var comparePricePresent;
+            if(appdata.campaigns[i].variants[0].compare_price != null){
+              comparePricePresent = appdata.campaigns[i].variants[0].compare_price
+            }
+            else{
+              comparePricePresent = "";
+            }
+            var productComparePriceText = document.createTextNode(comparePricePresent);
+            productComparePrice.appendChild(productComparePriceText);
+          }
+          //add to cart button
+          var AddToCartButton = document.createElement("button");
+          AddToCartButton.classList.add("AddToCartButtonOne");
+          AddToCartButton.style.backgroundColor = appdata.settings.button_color;
+          AddToCartButton.style.color = appdata.settings.background_color;
+          var AddToCartButtonText = document.createTextNode(appdata.settings.button_text);
+          AddToCartButton.appendChild(AddToCartButtonText);
+          //appendChilds
+          productContainer.appendChild(imageContainer);
+          productContainer.appendChild(priceAndProductName);
+          productContainer.appendChild(productComparePrice);
+          productContainer.appendChild(AddToCartButton);
+          imageContainer.appendChild(Image);
+          imageCarouselContainer.appendChild(productContainer);
+          parentContainer.appendChild(headingContainer);
+          parentContainer.appendChild(imageCarouselContainer);
+          parentContainer.appendChild(imageCarouselContainerDots);
+          
+          console.log(appdata.campaigns[i]);
+        }
+        else if(appdata.campaigns.length == 2){
+          console.log('this is the second condition');
+          carouselLeftButton.style.display = "none";
+          carouselRightButton.style.display = "none";
+          // outermost productContainer
+          var productContainer = document.createElement("div");
+          productContainer.classList.add("productContainerTwo");
+          // product image imageContainer
+          var imageContainer = document.createElement("div");
+          imageContainer.classList.add("imageContainerTwo");
+          // image
+          var Image = document.createElement("IMG");
+          Image.classList.add("imageTwo");
+          // product name 
+          var productName = document.createElement("p");
+          var productNameText = document.createTextNode(appdata.campaigns[i].title);
+          productName.appendChild(productNameText);
+          console.log(productNameText.length);
+          // console.log(productNameText.slice(0, 13));
+          if(productNameText.length > 30){
+
+          }
+          productName.classList.add("productNameTwo");
+          // image src
+          Image.src = appdata.campaigns[i].image;
+          //product price
+          var productPrice = document.createElement("span");
+          productPrice.classList.add('productPriceTwo');
+          var productPriceText = document.createTextNode(appdata.campaigns[i].variants[0].price);
+          productPrice.appendChild(productPriceText);
+          //product compareprice
+          if(appdata.campaigns[i].variants[0].compare_price == null){
+            var productComparePrice = document.createElement("span");
+            productComparePrice.classList.add('productComparePriceTwo');
+            var comparePricePresent;
+            if(appdata.campaigns[i].variants[0].compare_price != null){
+              comparePricePresent = appdata.campaigns[i].variants[0].compare_price
+            }
+            else{
+              comparePricePresent = "";
+            }
+            var productComparePriceText = document.createTextNode(comparePricePresent);
+            productComparePrice.appendChild(productComparePriceText);
+          }
+          //add to cart button
+          var AddToCartButton = document.createElement("button");
+          AddToCartButton.classList.add("AddToCartButtonTwo");
+          AddToCartButton.style.backgroundColor = appdata.settings.button_color;
+          AddToCartButton.style.color = appdata.settings.background_color;
+          var AddToCartButtonText = document.createTextNode(appdata.settings.button_text);
+          AddToCartButton.appendChild(AddToCartButtonText);
+          //product name, add to cart button and price container
+          var priceAndProductName = document.createElement("div");
+          priceAndProductName.classList.add('priceAndProductName');
+          priceAndProductName.appendChild(productName);
+          priceAndProductName.appendChild(productPrice);
+          priceAndProductName.appendChild(AddToCartButton);
+          //appendChilds
+          productContainer.appendChild(imageContainer);
+          productContainer.appendChild(priceAndProductName);
+          productContainer.appendChild(productComparePrice);
+          // productContainer.appendChild(AddToCartButton);
+          imageContainer.appendChild(Image);
+          imageCarouselContainer.appendChild(productContainer);
+          parentContainer.appendChild(headingContainer);
+          parentContainer.appendChild(imageCarouselContainer);
+          parentContainer.appendChild(imageCarouselContainerDots);
+          
+        //   console.log(appdata.campaigns[i]);
+        }
+        else{
+          // outermost productContainer
+          var productContainer = document.createElement("div");
+          productContainer.classList.add("productContainer");
+          // product image imageContainer
+          var imageContainer = document.createElement("div");
+          imageContainer.classList.add("imageContainer");
+          // image
+          var Image = document.createElement("IMG");
+          Image.classList.add("image");
+          // product name 
+          var productName = document.createElement("p");
+          var productNameText = document.createTextNode(appdata.campaigns[i].title);
+          productName.appendChild(productNameText);
+          console.log(productNameText.length);
+          // console.log(productNameText.slice(0, 13));
+          if(productNameText.length > 30){
+
+          }
+          productName.classList.add("productName");
+          // image src
+          Image.src = appdata.campaigns[i].image;
+          //product price
+          var productPrice = document.createElement("span");
+          productPrice.classList.add('productPrice');
+          var productPriceText = document.createTextNode(appdata.campaigns[i].variants[0].price);
+          productPrice.appendChild(productPriceText);
+          //product compareprice
+          if(appdata.campaigns[i].variants[0].compare_price == null){
+            var productComparePrice = document.createElement("span");
+            productComparePrice.classList.add('productComparePrice');
+            var comparePricePresent;
+            if(appdata.campaigns[i].variants[0].compare_price != null){
+              comparePricePresent = appdata.campaigns[i].variants[0].compare_price
+            }
+            else{
+              comparePricePresent = "";
+            }
+            var productComparePriceText = document.createTextNode(comparePricePresent);
+            productComparePrice.appendChild(productComparePriceText);
+          }
+          //add to cart button
+          var AddToCartButton = document.createElement("button");
+          AddToCartButton.classList.add("AddToCartButton");
+          AddToCartButton.style.backgroundColor = appdata.settings.button_color;
+          AddToCartButton.style.color = appdata.settings.background_color;
+          var AddToCartButtonText = document.createTextNode(appdata.settings.button_text);
+          AddToCartButton.appendChild(AddToCartButtonText);
+          //appendChilds
+          productContainer.appendChild(imageContainer);
+          productContainer.appendChild(productName);
+          productContainer.appendChild(productPrice);
+          productContainer.appendChild(productComparePrice);
+          productContainer.appendChild(AddToCartButton);
+          imageContainer.appendChild(Image);
+          imageCarouselContainer.appendChild(productContainer);
+          parentContainer.appendChild(headingContainer);
+          parentContainer.appendChild(imageCarouselContainer);
+          parentContainer.appendChild(imageCarouselContainerDots);
+          
+          console.log(appdata.campaigns[i]);
+        }
+      }
+    }
+    if(localStorage.getItem("data")){
+      appdata = JSON.parse(localStorage.getItem("data"))
+      var parentContainer = document.querySelector('.gainify');
+      dataItems(appdata);
+    }
+    else{
+      let appdata = get_data()
+      if(!appdata.settings.is_upsell_items){
+        localStorage.setItem("data", JSON.stringify(appdata));
+      }
+      dataItems(appdata);
+    }
+
+    // script for event trigger Right Carousel
+    var addCountDesktop = 0;
+    var scrollImagesDesktop;
+    document.querySelector('.carouselRightButton').addEventListener("click", carouselSlideRight);
+    function carouselSlideLeft() {
+      if(addCountDesktop>0){
+        addCountDesktop--;
+        console.log(addCountDesktop);
+        scrollImagesDesktop = addCountDesktop*500;
+        if(addCountDesktop == 0){
+          // document.querySelector('.carouselRightButton').style.backgroundColor = "#D5D3D3";
+          document.querySelector('.carouselRightButton').style.backgroundColor = "";
+          document.querySelector('.carouselLeftButton').style.backgroundColor = "#D5D3D3";
+        }
+        else{
+          document.querySelector('.carouselRightButton').style.backgroundColor = "#AA8755";
+        }
+      }
+      for(var i=0;i<document.getElementsByClassName('productContainer').length;i++){
+        console.log('hi from for loop');
+        document.getElementsByClassName('productContainer')[i].style.transform = "translate(-"+scrollImagesDesktop+"%)";
+      }
+    }
+
+    // script for event trigger Left Carousel
+    document.querySelector('.carouselLeftButton').addEventListener("click", carouselSlideLeft);
+    function carouselSlideRight() {
+      if(addCountDesktop<Math.round(document.getElementsByClassName('productContainer').length/5 - 1)){
+        addCountDesktop++;
+        console.log(addCountDesktop);
+        scrollImagesDesktop = addCountDesktop*500;
+        if(addCountDesktop == Math.round(document.getElementsByClassName('productContainer').length/5 - 1)){
+          document.querySelector('.carouselRightButton').style.backgroundColor = "#D5D3D3";
+          document.querySelector('.carouselLeftButton').style.backgroundColor = "#AA8755";
+        }
+      }
+      for(var i=0;i<document.getElementsByClassName('productContainer').length;i++){
+        console.log('hi from for loop');
+        document.getElementsByClassName('productContainer')[i].style.transform = "translate(-"+scrollImagesDesktop+"%)";
+      }
+    }
+  </script>
+{% endif %}

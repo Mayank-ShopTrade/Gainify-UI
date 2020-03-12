@@ -1,0 +1,234 @@
+.gainify{
+    // overflow: hidden;
+    max-width: 1616px;
+    margin: 0px auto; 
+    position: relative;
+    @media (min-width: 768px){
+        padding: 0px 80px;
+    }
+    @media (min-width: 1200px){
+        padding: 80px;
+    }
+    @media (min-width: 1616px){
+        padding: 0px;
+    }
+}
+
+.imageCarouselContainer{
+    display: flex;
+    overflow: hidden;
+}
+
+.imageCarouselContainerDots{
+    display: flex;
+    justify-content: center;
+    margin-top: 43px;
+    @media (min-width: 768px){
+        display: none;
+    }
+    @media (min-width: 1200px){
+        
+    }
+}
+
+.imageCarouselSingleDot{
+    width: 10px;
+    height: 10px;
+    background-color: #fff;
+    border: 1px solid #000;
+    margin-right: 5px;
+    border-radius: 50%;
+}
+
+.productContainer{
+    padding-right: 0px;
+    transition: all 0.4s ease;
+    @media (min-width: 768px){
+        padding-right: 44px;
+    }
+    @media (min-width: 1200px){
+        padding-right: 44px;
+    }
+}
+
+.productContainerOne{
+    width: 100%;
+    background-color: #F8F8F8;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.productContainerTwo{
+    flex-basis: 50%;
+    display: flex;
+    align-items: center;
+    background-color: #F8F8F8;
+}
+
+.imageContainer{
+    width: 100vw;
+    height: 342px;
+    overflow: hidden;
+    background-color: #F8F8F8;
+    padding: 28px;
+    @media (min-width: 768px){
+        width: 185px;
+        height: 185px;
+        padding: 28px;
+    }
+    @media (min-width: 1200px){
+        width: 290px;
+        height: 290px;
+        padding: 24px;
+    }
+}
+
+.image{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.imageContainerOne{
+    width: 227px;
+    height: 227px;
+    overflow: hidden;
+    padding: 24px;
+}
+
+.imageContainerTwo{
+    width: 227px;
+    height: 227px;
+    overflow: hidden;
+    padding: 24px;
+}
+
+.imageOne{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.imageTwo{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.AddToCartButton{
+    display: block;
+    width: 342px;
+    margin: 0px auto;
+    height: 54px;
+    @media (min-width: 768px){
+        width: 100%;
+        margin: 0px;
+    }
+}
+
+.AddToCartButtonOne{
+    display: inline-block;
+    width: 290px;
+    margin: 0px;
+    height: 54px;
+    margin-right: 168px;
+    // @media (min-width: 768px){
+    //     width: 100%;
+    //     margin: 0px;
+    // }
+}
+
+.AddToCartButtonTwo{
+    display: inline-block;
+    width: 290px;
+    margin: 0px;
+    height: 54px;
+    // margin-right: 168px;
+    // @media (min-width: 768px){
+    //     width: 100%;
+    //     margin: 0px;
+    // }
+}
+
+.productName{
+    font-size: 16px;
+    margin-top: 16px;
+    margin-bottom: 20px;
+    // height: 55px;
+}
+
+.headingContainer{
+    margin-bottom: 29px;
+    font-size: 20px;
+    padding-left: 34px;
+    @media (min-width: 768px){
+        font-size: 16px;
+        margin-bottom: 22px;
+    }
+    @media (min-width: 1200px){
+        font-size: 24px;
+        margin-bottom: 46px;
+    }
+}
+
+.productPrice{
+    display: inline-block;
+    margin-bottom: 26px;
+}
+
+.carouselRightButton,.carouselLeftButton{
+    display: none;
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    top: 50%;
+    z-index: 1;
+    font-size: 30px;
+    @media (min-width: 1200px) {
+        display: inline-block;
+    }
+}
+
+.carouselRightButton:hover,.carouselLeftButton:hover{
+    cursor: pointer;
+}
+
+.carouselLeftButton{
+    left: 0px;
+    transform: translate(-50%,-50%);
+    background-color: #D5D3D3;
+    padding-left: 16px;
+    @media (min-width: 1200px) {
+        left: 80px;
+    }
+    @media (min-width: 1616px) {
+        left: 0px;
+    }
+}
+
+.carouselLeftButton i{
+    color: #fff;
+}
+
+.carouselRightButton{
+    right: 0px;
+    transform: translate(50%,-50%);
+    background-color: #AA8755;
+    padding-left: 20px;
+    @media (min-width: 1200px) {
+        right: 80px;
+    }
+    @media (min-width: 1616px) {
+        right: 0px;
+    }
+}
+
+.carouselRightButton i{
+    color: #fff;
+}
+
+.active-dot{
+    background-color: #AA8755;
+    border: 1px solid #AA8755;
+}
